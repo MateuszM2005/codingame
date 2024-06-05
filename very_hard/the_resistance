@@ -1,0 +1,119 @@
+import java.util.*;
+
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+class Solution {
+
+    public static int length;
+    public static int wordCount;
+    public static boolean[][] words;
+    public static boolean[] message;
+    public static long[] points;
+
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String L = in.next(); //message
+        wordCount = in.nextInt(); //ammount of words in dictionary
+        String[] dictionary = new String[wordCount];
+        for (int i = 0; i < wordCount; i++) {
+            dictionary[i] = in.next();
+        }
+        length = L.length();
+
+        points = new long[length];
+        for(int i = 0; i < length;i++){
+            points[i] =- 1;
+        }
+        words = convertWords(dictionary);
+        message = convertMessage(L);
+
+
+        System.out.println(getPoints(0));
+    }
+
+    public static long getPoints(int pos){
+        if(points[pos] >= 0) return points[pos];
+        long output = 0;
+        for(int i = 0; i < wordCount;i++){
+            if(checkMatchingWord(pos,i)){
+                if(pos+words[i].length == length) output += 1;
+                else output += getPoints(pos+words[i].length);
+            }
+        }
+        points[pos] = output;
+        return output;
+    }
+
+
+
+    public static boolean checkMatchingWord(int pos, int word){
+        for(int i = 0; i < words[word].length ;i++){
+            if(pos+i >= length||words[word][i] != message[pos+i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+    public static boolean[][] convertWords(String[] in){
+        boolean[][] out = new boolean[in.length][];
+        for(int i = 0; i < in.length; i++){
+            boolean[][] word = new boolean[in[i].length()][];
+            int count = 0;
+            for(int j = 0; j < in[i].length(); j++){
+                word[j] = conversionTable[(int) in[i].charAt(j) - 65];
+                count += word[j].length;
+            }
+            out[i] = new boolean[count];
+            count = 0;
+            for(int j = 0; j < word.length;j++){
+                for(int k = 0; k < word[j].length;k++){
+                    out[i][count] = word[j][k];
+                    count++;
+                }
+            }
+        }
+        return out;
+    }
+    public static boolean[] convertMessage(String in){
+        boolean[] out = new boolean[length];
+        char[] data = in.toCharArray();
+        for(int i = 0; i < data.length;i++){
+            out[i] = data[i] == '-';
+        }
+        return out;
+    }
+    public static final boolean[][] conversionTable = {
+            {false,true},
+            {true,false,false,false},
+            {true,false,true,false},
+            {true,false,false},
+            {false},
+            {false,false,true,false},
+            {true,true,false},
+            {false,false,false,false},
+            {false,false},
+            {false,true,true,true},
+            {true,false,true},
+            {false,true,false,false},
+            {true,true},
+            {true,false},
+            {true,true,true},
+            {false,true,true,false},
+            {true,true,false,true},
+            {false,true,false},
+            {false,false,false},
+            {true},
+            {false,false,true},
+            {false,false,false,true},
+            {false,true,true},
+            {true,false,false,true},
+            {true,false,true,true},
+            {true,true,false,false}
+    };
+}
