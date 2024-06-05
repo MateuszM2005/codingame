@@ -1,0 +1,229 @@
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+class Player {
+
+    public static void main(String args[]) {
+        Scanner in = new Scanner(System.in);
+        int W = in.nextInt(); // width of the building. 0 - W-1
+        int H = in.nextInt(); // height of the building. 0 - H-1
+        int N = in.nextInt(); // maximum number of turns before game over.
+        int X0 = in.nextInt(); //left right
+        int Y0 = in.nextInt(); // up down
+        int X1 = X0;
+        int Y1 = Y0;
+        int maxleft = 0;
+        int maxup = 0;
+        int maxright = W-1;
+        int maxdown = H-1;
+        boolean outside = false;
+        boolean isXFound = false;
+        if(W == 1){
+            isXFound = true;
+            Y0 = Y0 * 2 - 1 != H ? H - Y0 - 1 : Y0 + 1;
+        }else {
+            X0 = X0 * 2 - 1 != W ? W - X0 - 1 : X0 + 1;
+        }
+        boolean isYFound = H == 1;
+        String bombDir = in.next();
+        System.out.println(X0+" "+Y0);
+
+
+        // game loop
+        while (true) {
+            bombDir = in.next(); // Current distance to the bomb compared to previous distance (COLDER, WARMER, SAME or UNKNOWN)
+            if(!isXFound){
+                if(bombDir.equals("COLDER")){
+                    if(X0 > X1){
+                        maxright = (X0+X1 - 1)/2;
+                        if(maxright!=maxleft) {
+                            X1 = X0;
+                            X0 =  maxleft+maxright-X0;
+                            if(outside){
+                                if(X1 == W-1){
+                                    X0 = (X0 + W-1)/2;
+                                }
+                                outside = false;
+                            }
+                            if(X0 == X1){
+                                X0 = X1 + 1;
+                            }
+                            if(X0 < 0){
+                                X0 = maxleft;
+                                outside = true;
+                            }
+                        }
+                    }else {
+                        maxleft = (X0+X1 +2)/2;
+                        if(maxright!=maxleft) {
+                            X1 = X0;
+                            X0 = maxleft+maxright-X0;
+                            if(outside){
+                                if(X1 == 0){
+                                    X0 = X0/2;
+                                }
+                                outside = false;
+                            }
+                            if(X0 == X1){
+                                X0 = X1 + 1;
+                            }
+                            if(X0 >= W){
+                                X0 = maxright;
+                                outside = true;
+                            }
+                        }
+                    }
+                }else
+                if(bombDir.equals("WARMER")){
+                    if(X0 > X1){
+                        maxleft = (X1 + X0+2)/2;
+                        if(maxright!=maxleft) {
+                            X1 = X0;
+                            X0 =  maxleft+maxright-X0;
+                            if(outside){
+                                if(X1 == W-1){
+                                    X0 = (X0 + W-1)/2;
+                                }
+                                outside = false;
+                            }
+                            if(X0 == X1){
+                                X0 = X1 + 1;
+                            }
+                            if(X0 < 0){
+                                X0 = maxleft;
+                                outside = true;
+                            }
+                        }
+                    }else {
+                        maxright = ((X1 + X0-1) / 2);
+                        if(maxright!=maxleft) {
+                            X1 = X0;
+                            X0 = maxleft+maxright-X0;
+                            if(outside){
+                                if(X1 == 0){
+                                    X0 = X0/2;
+                                }
+                                outside = false;
+                            }
+                            if(X0 == X1){
+                                X0 = X1 + 1;
+                            }
+                            if(X0 >= W){
+                                X0 = maxright;
+                                outside = true;
+                            }
+                        }
+                    }
+                }else
+                if(bombDir.equals("SAME")){
+                    maxright = (X1+X0)/2;
+                    maxleft = maxright;
+                }
+                if(maxleft == maxright){
+                    Y0 = Y0 * 2 - 1 != H ? H - Y0 - 1 : Y0 + 1;
+                    outside = false;
+                    isXFound = true;
+                }
+            }
+            else if(!isYFound){
+                if(bombDir.equals("COLDER")){
+                    if(Y0 > Y1){
+                        maxdown = (Y0+Y1 - 1)/2;
+                        if(maxdown!=maxup) {
+                            Y1 = Y0;
+                            Y0 =  maxup+maxdown-Y0;
+                            if(outside){
+                                if(Y1 == H-1){
+                                    Y0 = (Y0 + H-1)/2;
+                                }
+                                outside = false;
+                            }
+                            if(Y0 == Y1){
+                                Y0 = Y1 + 1;
+                            }
+                            if(Y0 < 0){
+                                Y0 = maxup;
+                                outside = true;
+                            }
+                        }
+                    }else {
+                        maxup = (Y0+Y1 +2)/2;
+                        if(maxdown!=maxup) {
+                            Y1 = Y0;
+                            Y0 = maxup+maxdown-Y0;
+                            if(outside){
+                                if(Y1 == 0){
+                                    Y0 = Y0/2;
+                                }
+                                outside = false;
+                            }
+                            if(Y0 == Y1){
+                                Y0 = Y1 + 1;
+                            }
+                            if(Y0 >= H){
+                                Y0 = maxdown;
+                                outside = true;
+                            }
+                        }
+                    }
+                }else
+                if(bombDir.equals("WARMER")){
+                    if(Y0 > Y1){
+                        maxup = (Y1 + Y0+2)/2;
+                        if(maxdown!=maxup) {
+                            Y1 = Y0;
+                            Y0 =  maxup+maxdown-Y0;
+                            if(outside){
+                                if(Y1 == H-1){
+                                    Y0 = (Y0 + H-1)/2;
+                                }
+                                outside = false;
+                            }
+                            if(Y0 == Y1){
+                                Y0 = Y1 + 1;
+                            }
+                            if(Y0 < 0){
+                                Y0 = maxup;
+                                outside = true;
+                            }
+                        }
+                    }else {
+                        maxdown = ((Y1 + Y0-1) / 2);
+                        if(maxdown!=maxup) {
+                            Y1 = Y0;
+                            Y0 = maxup+maxdown-Y0;
+                            if(outside){
+                                if(Y1 == 0){
+                                    Y0 = Y0/2;
+                                }
+                                outside = false;
+                            }
+                            if(Y0 == Y1){
+                                Y0 = Y1 + 1;
+                            }
+                            if(Y0 >= H){
+                                Y0 = maxdown;
+                                outside = true;
+                            }
+                        }
+                    }
+                }else
+                if(bombDir.equals("SAME")){
+                    maxup = (Y1+Y0)/2;
+                    maxdown = maxup;
+                }
+                if(maxup == maxdown){
+                    isYFound = true;
+                    X0 = maxleft;
+                    Y0 = maxup;
+                }
+            }
+            System.out.println(X0+" "+Y0);
+        }
+    }
+}
